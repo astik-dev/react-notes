@@ -3,7 +3,7 @@ import classes from "./NoteCreator.module.scss";
 import { TextareaAutosize } from "@mui/base";
 import Button from "../UI/Button/Button";
 
-const NoteCreator = () => {
+const NoteCreator = ({setNotes}) => {
 
     const formElem = useRef();
     const titleRef = useRef();
@@ -17,6 +17,15 @@ const NoteCreator = () => {
         setTitlePlaceholder("Title");
     }
 
+    function saveNote() {
+        const [noteTitle, noteContent] = [titleRef.current.value.trim(), contentRef.current.value.trim()];
+        
+        if (noteTitle != "" || noteContent != "") {
+            setNotes(prev => [...prev, {title: noteTitle, content: noteContent}]);
+        }
+        closeNoteCreator();
+    }
+
     function closeNoteCreator() {
         titleRef.current.value = "";
         contentRef.current.value = "";
@@ -26,7 +35,7 @@ const NoteCreator = () => {
 
     function handleClickOutside(event) {
         if (formElem.current && !formElem.current.contains(event.target)) {
-            closeNoteCreator();
+            saveNote();
         }
     }
 
@@ -65,7 +74,7 @@ const NoteCreator = () => {
                     Delete
                 </Button>
                 <Button
-                    onClick={closeNoteCreator}
+                    onClick={saveNote}
                 >
                     Close
                 </Button>

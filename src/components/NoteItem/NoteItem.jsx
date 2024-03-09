@@ -1,13 +1,13 @@
 import classes from "./NoteItem.module.scss";
 
-const NoteItem = ({title, content, deleteFunc}) => {
+const NoteItem = ({title, content, deleteNote}) => {
 
     return (
         <div className={classes.noteItem}>
-            <h1>{title}</h1>
-            <p>{content}</p>
+            {Boolean(title) && <h1>{title}</h1>}
+            {Boolean(content) && <p>{content}</p>}
             <div className={classes.btns}>
-                <button onClick={deleteFunc}>
+                <button onClick={deleteNote}>
                     <img src="/trash.svg" alt="Delete" />
                 </button>
             </div>
