@@ -25,18 +25,9 @@
         font-size: 16px;
         color: $input-color;
 
-        &::-webkit-input-placeholder {
-            color: $input-color;
-        }
-        &::-moz-placeholder {
-            color: $input-color;
-            opacity: 1;
-        }
-        &::-ms-input-placeholder {
-            color: $input-color;
-        }
         &::placeholder {
             color: $input-color;
+            opacity: 1;
         }
     }
 }
