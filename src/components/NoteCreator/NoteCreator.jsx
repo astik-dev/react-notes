@@ -43,7 +43,7 @@ const NoteCreator = () => {
     return (
         <form 
             ref={formElem} 
-            className={`${classes.noteCreator} ${isTextareaFocused && classes.open}`}
+            className={`${classes.noteCreator} ${isTextareaFocused ? classes.open : ""}`}
             onSubmit={e => e.preventDefault()}
         >
             <TextareaAutosize
