@@ -51,6 +51,13 @@ const NoteCreator = ({setNotes}) => {
             };
         }
     }, [isTextareaFocused]);
+
+    useEffect(() => {
+        window.addEventListener("beforeunload", saveNote);
+        return () => {
+            window.removeEventListener("beforeunload", saveNote);
+        }
+    }, []);
     
     return (
         <form 
