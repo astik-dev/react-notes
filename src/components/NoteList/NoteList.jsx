@@ -1,9 +1,9 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import NoteItem from "../NoteItem/NoteItem";
 import classes from "./NoteList.module.scss";
 import Masonry, {ResponsiveMasonry} from "react-responsive-masonry"
 
-const NoteList = ({notes, setNotes}) => {
+const NoteList = ({notesLength, searchedNotes, setNotes}) => {
 
     const masonryColumnsBreakPoints = useMemo(() => {
         const result = {0: 2};
@@ -15,24 +15,24 @@ const NoteList = ({notes, setNotes}) => {
 
     return (
         <div className={classes.noteList}>
-            {notes.length
+            {searchedNotes.length
                 ?
                 <ResponsiveMasonry columnsCountBreakPoints={masonryColumnsBreakPoints}>
                     <Masonry gutter="10px">
-                        {notes.map((note, index) => 
+                        {searchedNotes.map(note => 
                             <NoteItem
-                                key={index}
+                                key={note.id}
                                 title={note.title}
                                 content={note.content}
-                                deleteNote={() => setNotes(notes.filter((n, i) => i !== index))}
+                                deleteNote={() => setNotes(prevNotes => prevNotes.filter(prevNote => prevNote.id !== note.id))}
                             />
                         )}
                     </Masonry>
                 </ResponsiveMasonry>
                 :
                 <div className={classes.empty}>
-                    <img src="/note.svg" alt="Note icon" />
-                    <p>Notes you add appear here</p>
+                    <img src={notesLength ? "/no-note.svg" : "/note.svg"} alt="Note icon" />
+                    <p>{notesLength ? "No matching notes" : "Notes you add appear here"}</p>
                 </div>
             }
         </div>

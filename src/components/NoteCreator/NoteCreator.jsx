@@ -18,10 +18,13 @@ const NoteCreator = ({setNotes}) => {
     }
 
     function saveNote() {
-        const [noteTitle, noteContent] = [titleRef.current.value.trim(), contentRef.current.value.trim()];
+        const [title, content] = [titleRef.current.value.trim(), contentRef.current.value.trim()];
         
-        if (noteTitle != "" || noteContent != "") {
-            setNotes(prev => [...prev, {title: noteTitle, content: noteContent}]);
+        if (title != "" || content != "") {
+            setNotes(prev => {
+                const id = Date.now();
+                return [...prev, {id, title, content}];
+            });
         }
         closeNoteCreator();
     }

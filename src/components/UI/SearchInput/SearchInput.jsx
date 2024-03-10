@@ -1,12 +1,13 @@
 import { useState } from "react";
 import classes from "./SearchInput.module.scss";
 
-const SearchInput = (props) => {
+const SearchInput = ({placeholder, setSearchQuery}) => {
 
     const [inputValue, setInputValue] = useState("");
 
-    function handleInputChange (event) {
-        setInputValue(event.target.value);
+    function handleInputChange(value) {
+        setInputValue(value);
+        setSearchQuery(value.trim());
     }
 
     return (
@@ -18,13 +19,13 @@ const SearchInput = (props) => {
             />
             <input
                 type="text" 
-                placeholder={props.placeholder}
+                placeholder={placeholder}
                 value={inputValue}
-                onChange={handleInputChange}
+                onChange={e => handleInputChange(e.target.value)}
             />
             <button 
                 className={`${classes.btnClose} ${!Boolean(inputValue) && classes.hidden}`}
-                onClick={() => setInputValue("")}
+                onClick={() => handleInputChange("")}
             >
                 <img 
                     src="/cross.svg" 
