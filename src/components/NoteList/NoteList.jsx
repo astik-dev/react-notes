@@ -3,7 +3,7 @@ import NoteItem from "../NoteItem/NoteItem";
 import classes from "./NoteList.module.scss";
 import Masonry, {ResponsiveMasonry} from "react-responsive-masonry"
 
-const NoteList = ({notesLength, searchedNotes, setNotes}) => {
+const NoteList = ({notesLength, searchedNotes, setNotes, openModalNoteEditor}) => {
 
     const masonryColumnsBreakPoints = useMemo(() => {
         const result = {0: 2};
@@ -24,6 +24,7 @@ const NoteList = ({notesLength, searchedNotes, setNotes}) => {
                                 key={note.id}
                                 title={note.title}
                                 content={note.content}
+                                editNote={() => openModalNoteEditor(note)}
                                 deleteNote={() => setNotes(prevNotes => prevNotes.filter(prevNote => prevNote.id !== note.id))}
                             />
                         )}
