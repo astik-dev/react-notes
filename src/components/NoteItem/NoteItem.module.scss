@@ -1,3 +1,6 @@
+@use "../../styles/abstracts/breakpoints" as *;
+
+
 .noteItem {
     border: 1px solid #5F6368;
     border-radius: 8px;
@@ -24,13 +27,27 @@
         font-size: 16px;
         line-height: 24px;
         -webkit-line-clamp: 3;
+
+        @media (max-width: $sm) {
+            padding: 12px 12px 0 12px;
+
+            -webkit-line-clamp: 2;
+        }
     }
 
     p {
-        padding: 12px 16px;
+        padding: 12px 16px 0 16px;
+        margin-bottom: 12px;
         
         line-height: 20px;
         -webkit-line-clamp: 18;
+
+        @media (max-width: $sm) {
+            padding: 10px 12px 0 12px;
+            margin-bottom: 10px;
+
+            -webkit-line-clamp: 10;
+        }
     }
 
     .btns {
@@ -74,8 +91,10 @@
 
 @media (hover: hover) {
     .noteItem {
+
         p {
-            padding: 12px 16px 4px 16px;
+            padding: 12px 16px 0 16px;
+            margin-bottom: 4px;
         }
 
         .btns {

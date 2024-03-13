@@ -5,6 +5,10 @@ body {
     background: #202124;
     
     font-family: "Roboto", sans-serif;
+
+    &.modal-open {
+        overflow: hidden;
+    }
 }
 
 

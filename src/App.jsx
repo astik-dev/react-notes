@@ -5,11 +5,14 @@ import ModalNoteEditor from "./components/ModalNoteEditor/ModalNoteEditor";
 
 function App() {
 
+    const mobileScreenWidth = 575.5;
+
     const [notes, setNotes] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [noteToEdit, setNoteToEdit] = useState({});
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [didMount, setDidMount] = useState(false);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < mobileScreenWidth);
 
     const searchedNotes = useMemo(() => {
         
@@ -31,20 +34,31 @@ function App() {
     }
 
     useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < mobileScreenWidth);
+        };
+        window.addEventListener('resize', handleResize);
         const notesFromLocalStorage = localStorage.getItem("notes");
         if (notesFromLocalStorage) setNotes(JSON.parse(notesFromLocalStorage));
         setDidMount(true);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
     }, []);
 
     useEffect(() => {
         if (didMount) localStorage.setItem("notes", JSON.stringify(notes));
     }, [notes]);
 
+    useEffect(() => {
+        if (isMobile) document.body.classList.toggle("modal-open", isModalOpen);
+    }, [isModalOpen, isMobile]);
+
     return (
         <>
-            {isModalOpen && <ModalNoteEditor closeModalNoteEditor={() => setIsModalOpen(false)} {...{setNotes, noteToEdit}} />}
+            {isModalOpen && <ModalNoteEditor closeModalNoteEditor={() => setIsModalOpen(false)} {...{setNotes, noteToEdit, isMobile}} />}
             <Header {...{setSearchQuery}} />
-            <Main notesLength={notes.length} {...{searchedNotes, setNotes, openModalNoteEditor}} />
+            <Main notesLength={notes.length} {...{searchedNotes, setNotes, openModalNoteEditor, isMobile}} />
         </>
     )
 }

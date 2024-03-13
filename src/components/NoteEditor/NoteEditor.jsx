@@ -3,7 +3,7 @@ import classes from "./NoteEditor.module.scss";
 import { TextareaAutosize } from "@mui/base";
 import Button from "../UI/Button/Button";
 
-const NoteEditor = ({mode, setNotes, noteToEdit, closeModalNoteEditor, modalRef}) => {
+const NoteEditor = ({mode, setNotes, noteToEdit, closeModalNoteEditor, modalRef, isMobile}) => {
 
     const isEditor = mode === "editor";
     const isCreator = mode === "creator";
@@ -53,8 +53,11 @@ const NoteEditor = ({mode, setNotes, noteToEdit, closeModalNoteEditor, modalRef}
         const [title, content] = [titleRef.current.value.trim(), contentRef.current.value.trim()];
         closeEditor();
         if (title == "" && content == "") return;
-        if (isCreator) createNote(title, content);
-        if (isEditor) editNote(title, content);
+        if (isCreator || !noteToEdit) {
+            createNote(title, content)
+        } else if (isEditor) {
+            editNote(title, content);
+        }
     }
 
     function handleClickOutside(event) {
@@ -73,18 +76,21 @@ const NoteEditor = ({mode, setNotes, noteToEdit, closeModalNoteEditor, modalRef}
 
     useEffect(() => {
         if (isTextareaFocused) {
-            contentRef.current.focus();
-            document.addEventListener("click", handleClickOutside);
+            if (!isMobile) {
+                contentRef.current.focus();
+                document.addEventListener("click", handleClickOutside);
+            }
             window.addEventListener("beforeunload", saveNote);
             return () => {
-                document.removeEventListener('click', handleClickOutside);
+                if (!isMobile) document.removeEventListener('click', handleClickOutside);
                 window.removeEventListener("beforeunload", saveNote);
             };
         }
+        
     }, [isTextareaFocused]);
 
     useEffect(() => {
-        if (isEditor) {
+        if (isEditor && noteToEdit) {
             titleRef.current.value = noteToEdit.title;
             contentRef.current.value = noteToEdit.content;
         }
@@ -97,12 +103,16 @@ const NoteEditor = ({mode, setNotes, noteToEdit, closeModalNoteEditor, modalRef}
             onSubmit={e => e.preventDefault()}
             onClick={e => e.stopPropagation()}
         >
-            <div className={classes.textareas}>
+            <div
+                className={classes.textareas}
+                {...(isMobile && {onClick: () => contentRef.current.focus()})}
+            >
                 <TextareaAutosize
                     ref={titleRef}
                     className={classes.title}
                     placeholder={isEditor ? "Title" : titlePlaceholder}
                     {...(!isTextareaFocused && { onFocus: openEditor })}
+                    {...(isMobile && {onClick: e => e.stopPropagation()})}
                 />
                 <TextareaAutosize
                     ref={contentRef}
@@ -113,7 +123,7 @@ const NoteEditor = ({mode, setNotes, noteToEdit, closeModalNoteEditor, modalRef}
             <div className={classes.btns}>
                 <Button
                     style={{fontWeight: 400}}
-                    onClick={preventDefaultAndExecute(isCreator ? closeEditor : deleteNote)}
+                    onClick={preventDefaultAndExecute(isCreator || !noteToEdit ? closeEditor : deleteNote)}
                 >
                     Delete
                 </Button>

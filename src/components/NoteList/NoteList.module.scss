@@ -3,6 +3,10 @@
 .noteList {
     margin-top: 35px;
 
+    @media (max-width: $sm) {
+        margin-top: 0;
+    }
+
     .empty {
         display: flex;
         align-items: center;
