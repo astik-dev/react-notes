@@ -1,0 +1,30 @@
+.modal-enter-active,
+.modal-exit-active {
+    transition: all 0.4s;
+
+    > * {
+        transition: inherit;
+    }
+}
+
+.modal-enter {
+    opacity: 0;
+
+    > * {
+        transform: scale(0.3);
+    }
+}
+.modal-enter-active {
+    opacity: 1;
+
+    > * {
+        transform: scale(1);
+    }
+}
+.modal-exit-active {
+    opacity: 0;
+
+    > * {
+        transform: scale(0);
+    }
+}

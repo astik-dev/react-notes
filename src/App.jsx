@@ -1,11 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Header from "./components/Header/Header";
 import Main from "./components/Main/Main";
 import ModalNoteEditor from "./components/ModalNoteEditor/ModalNoteEditor";
+import { CSSTransition } from "react-transition-group";
 
 function App() {
 
     const mobileScreenWidth = 575.5;
+
+    const modalRef = useRef();
 
     const [notes, setNotes] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
@@ -56,7 +59,18 @@ function App() {
 
     return (
         <>
-            {isModalOpen && <ModalNoteEditor closeModalNoteEditor={() => setIsModalOpen(false)} {...{setNotes, noteToEdit, isMobile}} />}
+            <CSSTransition
+                in={isModalOpen}
+                nodeRef={modalRef}
+                timeout={400}
+                classNames="modal"
+                unmountOnExit
+            >
+                <ModalNoteEditor
+                    closeModalNoteEditor={() => setIsModalOpen(false)}
+                    {...{setNotes, noteToEdit, isMobile, modalRef}}
+                />
+            </CSSTransition>
             <Header {...{setSearchQuery}} />
             <Main notesLength={notes.length} {...{searchedNotes, setNotes, openModalNoteEditor, isMobile}} />
         </>

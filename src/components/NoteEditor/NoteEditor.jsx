@@ -20,8 +20,10 @@ const NoteEditor = ({mode, setNotes, noteToEdit, closeModalNoteEditor, modalRef,
         setTitlePlaceholder("Title");
     }
     function closeEditor() {
-        titleRef.current.value = "";
-        contentRef.current.value = "";
+        setTimeout(() => {
+            titleRef.current.value = "";
+            contentRef.current.value = "";
+        }, isEditor ? 400 : 0);
         if (isCreator) {
             setIsTextareaFocused(false);
             setTitlePlaceholder("Take a note...");

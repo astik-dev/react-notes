@@ -1,13 +1,10 @@
 import classes from "./ModalNoteEditor.module.scss";
 import NoteEditor from "../NoteEditor/NoteEditor";
-import { useRef } from "react";
 
-const ModalNoteEditor = ({setNotes, noteToEdit, closeModalNoteEditor, isMobile}) => {
-    
-    const modalRef = useRef();
+const ModalNoteEditor = ({setNotes, noteToEdit, closeModalNoteEditor, isMobile, modalRef}) => {
 
     return (
-        <div className={classes.modalNoteEditor} ref={modalRef}> 
+        <div className={`${classes.modalNoteEditor} modal`} ref={modalRef}> 
             <NoteEditor mode="editor" {...{setNotes, noteToEdit, closeModalNoteEditor, modalRef, isMobile}} />
         </div>
     )
