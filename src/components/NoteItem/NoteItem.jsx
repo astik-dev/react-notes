@@ -1,13 +1,22 @@
+import { useRef } from "react";
 import classes from "./NoteItem.module.scss";
 
 const NoteItem = ({title, content, editNote, deleteNote}) => {
 
+    const noteRef = useRef();
+
+    function handleDeleteClick(event) {
+        event.stopPropagation();
+        noteRef.current.classList.add(classes.deleteAnimation);
+        setTimeout(deleteNote, 150);
+    }
+
     return (
-        <div className={classes.noteItem} onClick={editNote}>
+        <div className={classes.noteItem} onClick={editNote} ref={noteRef}>
             {Boolean(title) && <h1>{title}</h1>}
             {Boolean(content) && <p>{content}</p>}
             <div className={classes.btns}>
-                <button onClick={e => {e.stopPropagation();deleteNote()}}>
+                <button onClick={handleDeleteClick}>
                     <img src="/trash.svg" alt="Delete" />
                 </button>
             </div>

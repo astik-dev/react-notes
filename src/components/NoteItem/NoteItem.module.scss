@@ -89,6 +89,12 @@
     }
 }
 
+.noteItem.deleteAnimation {
+    transition: all 0.15s;
+    opacity: 0;
+    transform: translateY(-50%) scaleY(0);
+}
+
 @media (hover: hover) {
     .noteItem {
 
