@@ -2,7 +2,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Header from "./components/Header/Header";
 import Main from "./components/Main/Main";
 import ModalNoteEditor from "./components/ModalNoteEditor/ModalNoteEditor";
-import { CSSTransition } from "react-transition-group";
+import { Routes, Route, useLocation } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
 
 function App() {
 
@@ -10,9 +11,10 @@ function App() {
 
     const modalRef = useRef();
 
+    const location = useLocation();
+
     const [notes, setNotes] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
-    const [noteToEdit, setNoteToEdit] = useState({});
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [didMount, setDidMount] = useState(false);
     const [isMobile, setIsMobile] = useState(window.innerWidth < mobileScreenWidth);
@@ -30,11 +32,6 @@ function App() {
             );
         });
     }, [notes, searchQuery]);
-
-    function openModalNoteEditor(note) {
-        setNoteToEdit(note);
-        setIsModalOpen(true);
-    }
 
     useEffect(() => {
         const handleResize = () => {
@@ -58,21 +55,19 @@ function App() {
     }, [isModalOpen, isMobile]);
 
     return (
-        <>
-            <CSSTransition
-                in={isModalOpen}
-                nodeRef={modalRef}
-                timeout={400}
-                classNames="modal"
-                unmountOnExit
-            >
-                <ModalNoteEditor
-                    closeModalNoteEditor={() => setIsModalOpen(false)}
-                    {...{setNotes, noteToEdit, isMobile, modalRef}}
-                />
-            </CSSTransition>
+        <>  
+            {didMount &&
+                <AnimatePresence>
+                    <Routes location={location} key={location.pathname}>
+                        <Route path="/" element={null} />
+                        <Route path="/note/:id" element={
+                            <ModalNoteEditor {...{notes, setNotes, isMobile, modalRef, setIsModalOpen}} />
+                        } />
+                    </Routes> 
+                </AnimatePresence>
+            }
             <Header {...{setSearchQuery}} />
-            <Main notesLength={notes.length} {...{searchedNotes, setNotes, openModalNoteEditor, isMobile}} />
+            <Main notesLength={notes.length} {...{searchedNotes, setNotes, isMobile}} />
         </>
     )
 }

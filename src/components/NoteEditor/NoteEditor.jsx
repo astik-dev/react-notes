@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import classes from "./NoteEditor.module.scss";
 import { TextareaAutosize } from "@mui/base";
 import Button from "../UI/Button/Button";
+import { motion } from "framer-motion";
 
 const NoteEditor = ({mode, setNotes, noteToEdit, closeModalNoteEditor, modalRef, isMobile}) => {
 
@@ -20,11 +21,9 @@ const NoteEditor = ({mode, setNotes, noteToEdit, closeModalNoteEditor, modalRef,
         setTitlePlaceholder("Title");
     }
     function closeEditor() {
-        setTimeout(() => {
+        if (isCreator) {
             titleRef.current.value = "";
             contentRef.current.value = "";
-        }, isEditor ? 400 : 0);
-        if (isCreator) {
             setIsTextareaFocused(false);
             setTitlePlaceholder("Take a note...");
         }
@@ -55,8 +54,8 @@ const NoteEditor = ({mode, setNotes, noteToEdit, closeModalNoteEditor, modalRef,
         const [title, content] = [titleRef.current.value.trim(), contentRef.current.value.trim()];
         closeEditor();
         if (title == "" && content == "") return;
-        if (isCreator || !noteToEdit) {
-            createNote(title, content)
+        if (isCreator || noteToEdit == "new") {
+            createNote(title, content);
         } else if (isEditor) {
             editNote(title, content);
         }
@@ -68,6 +67,7 @@ const NoteEditor = ({mode, setNotes, noteToEdit, closeModalNoteEditor, modalRef,
             (isEditor && event.target == modalRef.current)
         ) {
             saveNote();
+            document.removeEventListener('click', handleClickOutside);
         }
     }
 
@@ -92,18 +92,25 @@ const NoteEditor = ({mode, setNotes, noteToEdit, closeModalNoteEditor, modalRef,
     }, [isTextareaFocused]);
 
     useEffect(() => {
-        if (isEditor && noteToEdit) {
+        if (isEditor && noteToEdit != "new") {
             titleRef.current.value = noteToEdit.title;
             contentRef.current.value = noteToEdit.content;
         }
     }, []);
     
     return (
-        <form
+        <motion.form
             ref={formRef}
             className={`${classes.noteEditor} ${isTextareaFocused ? classes.open : ""} ${classes[mode]}`}
             onSubmit={e => e.preventDefault()}
             onClick={e => e.stopPropagation()}
+
+            {...(isEditor && {
+                initial: {scale: 0.3},
+                animate: {scale: 1},
+                exit: {scale: 0.3},
+                transition: {duration: 0.4, ease: [0.25, 0.1, 0.25, 1.0]},
+            })}
         >
             <div
                 className={classes.textareas}
@@ -125,7 +132,7 @@ const NoteEditor = ({mode, setNotes, noteToEdit, closeModalNoteEditor, modalRef,
             <div className={classes.btns}>
                 <Button
                     style={{fontWeight: 400}}
-                    onClick={preventDefaultAndExecute(isCreator || !noteToEdit ? closeEditor : deleteNote)}
+                    onClick={preventDefaultAndExecute(isCreator || noteToEdit == "new" ? closeEditor : deleteNote)}
                 >
                     Delete
                 </Button>
@@ -133,7 +140,7 @@ const NoteEditor = ({mode, setNotes, noteToEdit, closeModalNoteEditor, modalRef,
                     Close
                 </Button>
             </div>
-        </form>
+        </motion.form>
     )
 };
 

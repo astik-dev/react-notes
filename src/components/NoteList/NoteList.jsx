@@ -1,9 +1,12 @@
 import { useMemo } from "react";
 import NoteItem from "../NoteItem/NoteItem";
 import classes from "./NoteList.module.scss";
-import Masonry, {ResponsiveMasonry} from "react-responsive-masonry"
+import Masonry, {ResponsiveMasonry} from "react-responsive-masonry";
+import { useNavigate } from "react-router-dom";
 
-const NoteList = ({notesLength, searchedNotes, setNotes, openModalNoteEditor}) => {
+const NoteList = ({notesLength, searchedNotes, setNotes}) => {
+
+    const navigate = useNavigate();
 
     const masonryColumnsBreakPoints = useMemo(() => {
         const result = {0: 2};
@@ -24,7 +27,7 @@ const NoteList = ({notesLength, searchedNotes, setNotes, openModalNoteEditor}) =
                                 key={note.id}
                                 title={note.title}
                                 content={note.content}
-                                editNote={() => openModalNoteEditor(note)}
+                                editNote={() => navigate(`/note/${note.id}`)}
                                 deleteNote={() => setNotes(prevNotes => prevNotes.filter(prevNote => prevNote.id !== note.id))}
                             />
                         )}
