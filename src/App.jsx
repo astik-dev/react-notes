@@ -13,10 +13,9 @@ function App() {
 
     const location = useLocation();
 
-    const [notes, setNotes] = useState([]);
+    const [notes, setNotes] = useState(JSON.parse(localStorage.getItem("notes") || "[]"));
     const [searchQuery, setSearchQuery] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [didMount, setDidMount] = useState(false);
     const [isMobile, setIsMobile] = useState(window.innerWidth < mobileScreenWidth);
 
     const searchedNotes = useMemo(() => {
@@ -38,16 +37,13 @@ function App() {
             setIsMobile(window.innerWidth < mobileScreenWidth);
         };
         window.addEventListener('resize', handleResize);
-        const notesFromLocalStorage = localStorage.getItem("notes");
-        if (notesFromLocalStorage) setNotes(JSON.parse(notesFromLocalStorage));
-        setDidMount(true);
         return () => {
             window.removeEventListener('resize', handleResize);
         };
     }, []);
 
     useEffect(() => {
-        if (didMount) localStorage.setItem("notes", JSON.stringify(notes));
+        localStorage.setItem("notes", JSON.stringify(notes));
     }, [notes]);
 
     useEffect(() => {
@@ -56,16 +52,14 @@ function App() {
 
     return (
         <>  
-            {didMount &&
-                <AnimatePresence>
-                    <Routes location={location} key={location.pathname}>
-                        <Route path="/" element={null} />
-                        <Route path="/note/:id" element={
-                            <ModalNoteEditor {...{notes, setNotes, isMobile, modalRef, setIsModalOpen}} />
-                        } />
-                    </Routes> 
-                </AnimatePresence>
-            }
+            <AnimatePresence>
+                <Routes location={location} key={location.pathname}>
+                    <Route path="/" element={null} />
+                    <Route path="/note/:id" element={
+                        <ModalNoteEditor {...{notes, setNotes, isMobile, modalRef, setIsModalOpen}} />
+                    } />
+                </Routes> 
+            </AnimatePresence>
             <Header {...{setSearchQuery}} />
             <Main notesLength={notes.length} {...{searchedNotes, setNotes, isMobile}} />
         </>
