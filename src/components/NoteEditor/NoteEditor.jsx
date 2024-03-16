@@ -1,13 +1,16 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import classes from "./NoteEditor.module.scss";
 import { TextareaAutosize } from "@mui/base";
 import Button from "../UI/Button/Button";
 import { motion } from "framer-motion";
+import { MobileContext } from "../../contexts/MobileContext";
 
-const NoteEditor = ({mode, setNotes, noteToEdit, closeModalNoteEditor, modalRef, isMobile}) => {
+const NoteEditor = ({mode, setNotes, noteToEdit, closeModalNoteEditor, modalRef}) => {
 
     const isEditor = mode === "editor";
     const isCreator = mode === "creator";
+
+    const isMobile = useContext(MobileContext);
 
     const formRef = useRef();
     const titleRef = useRef();

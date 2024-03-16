@@ -3,9 +3,12 @@ import NoteEditor from "../NoteEditor/NoteEditor";
 import NoteList from "../NoteList/NoteList";
 import AddNoteButton from "../UI/AddNoteButton/AddNoteButton";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { MobileContext } from "../../contexts/MobileContext";
 
-const Main = ({notesLength, searchedNotes, setNotes, isMobile}) => {
+const Main = ({notesLength, searchedNotes, setNotes}) => {
 
+    const isMobile = useContext(MobileContext);
     const navigate = useNavigate();
 
     return (

@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useEffect } from "react";
 
-const ModalNoteEditor = ({notes, setNotes, isMobile, modalRef, setIsModalOpen}) => {
+const ModalNoteEditor = ({notes, setNotes, modalRef, setIsModalOpen}) => {
 
     const { id } = useParams();
     const navigate = useNavigate();
@@ -38,7 +38,7 @@ const ModalNoteEditor = ({notes, setNotes, isMobile, modalRef, setIsModalOpen}) 
             <NoteEditor
                 mode="editor"
                 closeModalNoteEditor={closeModal}
-                {...{setNotes, noteToEdit, modalRef, isMobile}}
+                {...{setNotes, noteToEdit, modalRef}}
             />
         </motion.div>
     )

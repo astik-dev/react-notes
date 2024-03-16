@@ -4,6 +4,7 @@ import Main from "./components/Main/Main";
 import ModalNoteEditor from "./components/ModalNoteEditor/ModalNoteEditor";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
+import { MobileContext } from "./contexts/MobileContext";
 
 function App() {
 
@@ -51,18 +52,18 @@ function App() {
     }, [isModalOpen, isMobile]);
 
     return (
-        <>  
+        <MobileContext.Provider value={isMobile}>
             <AnimatePresence>
                 <Routes location={location} key={location.pathname}>
                     <Route path="/" element={null} />
                     <Route path="/note/:id" element={
-                        <ModalNoteEditor {...{notes, setNotes, isMobile, modalRef, setIsModalOpen}} />
+                        <ModalNoteEditor {...{notes, setNotes, modalRef, setIsModalOpen}} />
                     } />
                 </Routes> 
             </AnimatePresence>
             <Header {...{setSearchQuery}} />
-            <Main notesLength={notes.length} {...{searchedNotes, setNotes, isMobile}} />
-        </>
+            <Main notesLength={notes.length} {...{searchedNotes, setNotes}} />
+        </MobileContext.Provider>
     )
 }
 
