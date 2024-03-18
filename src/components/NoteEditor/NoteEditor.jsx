@@ -4,13 +4,15 @@ import { TextareaAutosize } from "@mui/base";
 import Button from "../UI/Button/Button";
 import { motion } from "framer-motion";
 import { MobileContext } from "../../contexts/MobileContext";
+import { NotesContext } from "../../contexts/NotesContext";
 
-const NoteEditor = ({mode, setNotes, noteToEdit, closeModalNoteEditor, modalRef}) => {
+const NoteEditor = ({mode, noteToEdit, closeModalNoteEditor, modalRef}) => {
 
     const isEditor = mode === "editor";
     const isCreator = mode === "creator";
 
     const isMobile = useContext(MobileContext);
+    const {createNote, editNote, deleteNote} = useContext(NotesContext);
 
     const formRef = useRef();
     const titleRef = useRef();
@@ -33,26 +35,6 @@ const NoteEditor = ({mode, setNotes, noteToEdit, closeModalNoteEditor, modalRef}
         if (isEditor) closeModalNoteEditor();
     }
 
-    function createNote(title, content) {
-        setNotes(prev => {
-            const id = Date.now();
-            return [...prev, {id, title, content}];
-        });
-    }
-    function editNote(title, content) {
-        setNotes(prev => {
-            return prev.map(note => {
-                if (note.id == noteToEdit.id) {
-                    return {...note, title, content}
-                }
-                return note;
-            });
-        });
-    }
-    function deleteNote() {
-        setNotes(prev => prev.filter(note => note.id != noteToEdit.id));
-        closeEditor();
-    }
     function saveNote() {
         const [title, content] = [titleRef.current.value.trim(), contentRef.current.value.trim()];
         closeEditor();
@@ -60,7 +42,7 @@ const NoteEditor = ({mode, setNotes, noteToEdit, closeModalNoteEditor, modalRef}
         if (isCreator || noteToEdit == "new") {
             createNote(title, content);
         } else if (isEditor) {
-            editNote(title, content);
+            editNote(title, content, noteToEdit.id);
         }
     }
 
@@ -135,7 +117,7 @@ const NoteEditor = ({mode, setNotes, noteToEdit, closeModalNoteEditor, modalRef}
             <div className={classes.btns}>
                 <Button
                     style={{fontWeight: 400}}
-                    onClick={preventDefaultAndExecute(isCreator || noteToEdit == "new" ? closeEditor : deleteNote)}
+                    onClick={preventDefaultAndExecute(() => {deleteNote(noteToEdit?.id);closeEditor()})}
                 >
                     Delete
                 </Button>

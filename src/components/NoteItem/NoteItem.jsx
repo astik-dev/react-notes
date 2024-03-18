@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import classes from "./NoteItem.module.scss";
 
-const NoteItem = ({title, content, editNote, deleteNote}) => {
+const NoteItem = ({title, content, openNoteEditor, deleteNote}) => {
 
     const noteRef = useRef();
 
@@ -12,7 +12,7 @@ const NoteItem = ({title, content, editNote, deleteNote}) => {
     }
 
     return (
-        <div className={classes.noteItem} onClick={editNote} ref={noteRef}>
+        <div className={classes.noteItem} onClick={openNoteEditor} ref={noteRef}>
             {Boolean(title) && <h1>{title}</h1>}
             {Boolean(content) && <p>{content}</p>}
             <div className={classes.btns}>

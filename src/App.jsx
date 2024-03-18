@@ -5,6 +5,8 @@ import ModalNoteEditor from "./components/ModalNoteEditor/ModalNoteEditor";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import { MobileContext } from "./contexts/MobileContext";
+import { NotesContext } from "./contexts/NotesContext";
+import { useNotes } from "./hooks/useNotes";
 
 function App() {
 
@@ -14,7 +16,7 @@ function App() {
 
     const location = useLocation();
 
-    const [notes, setNotes] = useState(JSON.parse(localStorage.getItem("notes") || "[]"));
+    const [notes, noteMethods] = useNotes();
     const [searchQuery, setSearchQuery] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(window.innerWidth < mobileScreenWidth);
@@ -44,25 +46,23 @@ function App() {
     }, []);
 
     useEffect(() => {
-        localStorage.setItem("notes", JSON.stringify(notes));
-    }, [notes]);
-
-    useEffect(() => {
         if (isMobile) document.body.classList.toggle("modal-open", isModalOpen);
     }, [isModalOpen, isMobile]);
 
     return (
         <MobileContext.Provider value={isMobile}>
-            <AnimatePresence>
-                <Routes location={location} key={location.pathname}>
-                    <Route path="/" element={null} />
-                    <Route path="/note/:id" element={
-                        <ModalNoteEditor {...{notes, setNotes, modalRef, setIsModalOpen}} />
-                    } />
-                </Routes> 
-            </AnimatePresence>
-            <Header {...{setSearchQuery}} />
-            <Main notesLength={notes.length} {...{searchedNotes, setNotes}} />
+            <NotesContext.Provider value={noteMethods}>
+                <AnimatePresence>
+                    <Routes location={location} key={location.pathname}>
+                        <Route path="/" element={null} />
+                        <Route path="/note/:id" element={
+                            <ModalNoteEditor {...{modalRef, setIsModalOpen}} />
+                        } />
+                    </Routes> 
+                </AnimatePresence>
+                <Header {...{setSearchQuery}} />
+                <Main {...{searchedNotes}} />
+            </NotesContext.Provider>
         </MobileContext.Provider>
     )
 }

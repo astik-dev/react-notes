@@ -2,16 +2,17 @@ import classes from "./ModalNoteEditor.module.scss";
 import NoteEditor from "../NoteEditor/NoteEditor";
 import { useNavigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
+import { NotesContext } from "../../contexts/NotesContext";
 
-const ModalNoteEditor = ({notes, setNotes, modalRef, setIsModalOpen}) => {
+const ModalNoteEditor = ({modalRef, setIsModalOpen}) => {
+
+    const {findNoteById} = useContext(NotesContext);
 
     const { id } = useParams();
     const navigate = useNavigate();
 
-    const noteToEdit = id == "new"
-        ? "new"
-        : notes.find(note => note.id == id);
+    const noteToEdit = id == "new" ? "new" : findNoteById(id);
 
     useEffect(() => {
         if (!noteToEdit) navigate("/");
@@ -38,7 +39,7 @@ const ModalNoteEditor = ({notes, setNotes, modalRef, setIsModalOpen}) => {
             <NoteEditor
                 mode="editor"
                 closeModalNoteEditor={closeModal}
-                {...{setNotes, noteToEdit, modalRef}}
+                {...{noteToEdit, modalRef}}
             />
         </motion.div>
     )

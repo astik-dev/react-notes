@@ -1,10 +1,13 @@
-import { useMemo } from "react";
+import { useContext, useMemo } from "react";
 import NoteItem from "../NoteItem/NoteItem";
 import classes from "./NoteList.module.scss";
 import Masonry, {ResponsiveMasonry} from "react-responsive-masonry";
 import { useNavigate } from "react-router-dom";
+import { NotesContext } from "../../contexts/NotesContext";
 
-const NoteList = ({notesLength, searchedNotes, setNotes}) => {
+const NoteList = ({searchedNotes}) => {
+
+    const {notesLength, deleteNote} = useContext(NotesContext);
 
     const navigate = useNavigate();
 
@@ -27,8 +30,8 @@ const NoteList = ({notesLength, searchedNotes, setNotes}) => {
                                 key={note.id}
                                 title={note.title}
                                 content={note.content}
-                                editNote={() => navigate(`/note/${note.id}`)}
-                                deleteNote={() => setNotes(prevNotes => prevNotes.filter(prevNote => prevNote.id !== note.id))}
+                                openNoteEditor={() => navigate(`/note/${note.id}`)}
+                                deleteNote={() => deleteNote(note.id)}
                             />
                         )}
                     </Masonry>
