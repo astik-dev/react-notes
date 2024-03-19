@@ -5,6 +5,7 @@ import Button from "../UI/Button/Button";
 import { motion } from "framer-motion";
 import { MobileContext } from "../../contexts/MobileContext";
 import { NotesContext } from "../../contexts/NotesContext";
+import BackButton from "../UI/BackButton/BackButton";
 
 const NoteEditor = ({mode, noteToEdit, closeModalNoteEditor, modalRef}) => {
 
@@ -97,6 +98,11 @@ const NoteEditor = ({mode, noteToEdit, closeModalNoteEditor, modalRef}) => {
                 transition: {duration: 0.4, ease: [0.25, 0.1, 0.25, 1.0]},
             })}
         >
+            {isMobile &&
+                <div className={classes.header}>
+                    <BackButton onClick={preventDefaultAndExecute(saveNote)} />
+                </div>
+            }
             <div
                 className={classes.textareas}
                 {...(isMobile && {onClick: () => contentRef.current.focus()})}
