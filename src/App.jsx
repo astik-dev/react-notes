@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Header from "./components/Header/Header";
 import Main from "./components/Main/Main";
 import ModalNoteEditor from "./components/ModalNoteEditor/ModalNoteEditor";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import { MobileContext } from "./contexts/MobileContext";
 import { NotesContext } from "./contexts/NotesContext";
@@ -60,6 +60,7 @@ function App() {
                         <Route path="/note/:id" element={
                             <ModalNoteEditor {...{modalRef}} />
                         } />
+                        <Route path="*" element={<Navigate to="/" />} />
                     </Routes> 
                 </AnimatePresence>
                 <Header {...{setSearchQuery}} />
