@@ -2,15 +2,17 @@ import classes from "./ModalNoteEditor.module.scss";
 import NoteEditor from "../NoteEditor/NoteEditor";
 import { useNavigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { NotesContext } from "../../contexts/NotesContext";
 
-const ModalNoteEditor = ({modalRef}) => {
+const ModalNoteEditor = () => {
 
     const {findNoteById} = useContext(NotesContext);
 
     const { id } = useParams();
     const navigate = useNavigate();
+
+    const modalRef = useRef();
 
     const noteToEdit = id == "new" ? "new" : findNoteById(id);
 

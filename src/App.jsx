@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Header from "./components/Header/Header";
 import Main from "./components/Main/Main";
 import ModalNoteEditor from "./components/ModalNoteEditor/ModalNoteEditor";
@@ -11,8 +11,6 @@ import { useNotes } from "./hooks/useNotes";
 function App() {
 
     const mobileScreenWidth = 575.5;
-
-    const modalRef = useRef();
 
     const location = useLocation();
 
@@ -57,9 +55,7 @@ function App() {
                 <AnimatePresence>
                     <Routes location={location} key={location.pathname}>
                         <Route path="/" element={null} />
-                        <Route path="/note/:id" element={
-                            <ModalNoteEditor {...{modalRef}} />
-                        } />
+                        <Route path="/note/:id" element={<ModalNoteEditor />} />
                         <Route path="*" element={<Navigate to="/" />} />
                     </Routes> 
                 </AnimatePresence>
