@@ -18,7 +18,6 @@ function App() {
 
     const [notes, noteMethods] = useNotes();
     const [searchQuery, setSearchQuery] = useState("");
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(window.innerWidth < mobileScreenWidth);
 
     const searchedNotes = useMemo(() => {
@@ -46,8 +45,11 @@ function App() {
     }, []);
 
     useEffect(() => {
-        if (isMobile) document.body.classList.toggle("modal-open", isModalOpen);
-    }, [isModalOpen, isMobile]);
+        if (isMobile) {
+            const isModalNoteEditorOpen = location.pathname.includes("/note/");
+            document.body.classList.toggle("modal-open", isModalNoteEditorOpen);
+        }
+    }, [location.pathname, isMobile]);
 
     return (
         <MobileContext.Provider value={isMobile}>
@@ -56,7 +58,7 @@ function App() {
                     <Routes location={location} key={location.pathname}>
                         <Route path="/" element={null} />
                         <Route path="/note/:id" element={
-                            <ModalNoteEditor {...{modalRef, setIsModalOpen}} />
+                            <ModalNoteEditor {...{modalRef}} />
                         } />
                     </Routes> 
                 </AnimatePresence>

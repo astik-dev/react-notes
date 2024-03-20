@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { useContext, useEffect } from "react";
 import { NotesContext } from "../../contexts/NotesContext";
 
-const ModalNoteEditor = ({modalRef, setIsModalOpen}) => {
+const ModalNoteEditor = ({modalRef}) => {
 
     const {findNoteById} = useContext(NotesContext);
 
@@ -16,14 +16,12 @@ const ModalNoteEditor = ({modalRef, setIsModalOpen}) => {
 
     useEffect(() => {
         if (!noteToEdit) navigate("/");
-        else setIsModalOpen(true);
     }, []);
 
     if (!noteToEdit) return null;
 
     function closeModal() {
         navigate("/", {replace: noteToEdit == "new"});
-        setIsModalOpen(false);
     }
 
     return (
