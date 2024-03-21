@@ -1,6 +1,11 @@
 @use "../abstracts/breakpoints" as *;
 
 
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
+
 body {
     background: #202124;
     
