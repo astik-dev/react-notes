@@ -7,15 +7,24 @@ export const useNotes = () => {
     const [notes, setNotes] = useState(notesFromLocalStorage);
 
 
-    const createNote = useCallback((title, content) => {
+    const createNote = useCallback((title, content, color) => {
         const id = Date.now();
-        setNotes( prev => [ ...prev, {id, title, content} ] );
+        setNotes( prev => [ ...prev, {id, title, content, color} ] );
     }, []);
 
     const editNote = useCallback((title, content, id) => {
         setNotes(prev =>
             prev.map(note => {
                 if (note.id == id) return {...note, title, content};
+                return note;
+            })
+        );
+    }, []);
+
+    const changeNoteColor = useCallback((id, color) => {
+        setNotes(prev =>
+            prev.map(note => {
+                if (note.id == id) return {...note, color};
                 return note;
             })
         );
@@ -37,5 +46,15 @@ export const useNotes = () => {
     }, [notes]);
 
 
-    return [notes, {createNote, editNote, deleteNote, findNoteById, notesLength}];
+    return [
+        notes,
+        {
+            createNote,
+            editNote,
+            deleteNote,
+            findNoteById,
+            notesLength,
+            changeNoteColor
+        }
+    ];
 }

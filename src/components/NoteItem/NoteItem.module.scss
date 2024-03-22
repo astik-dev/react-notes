@@ -53,6 +53,7 @@
     .btns {
         display: flex;
         justify-content: flex-end;
+        gap: 6px;
 
         padding: 4px 8px;
 
@@ -75,9 +76,6 @@
             }
 
             img {
-                width: 17px;
-                height: 17px;
-                
                 object-fit: contain;
             }
         }

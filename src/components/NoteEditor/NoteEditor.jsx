@@ -21,6 +21,7 @@ const NoteEditor = ({mode, noteToEdit, closeModalNoteEditor, modalRef}) => {
 
     const [isTextareaFocused, setIsTextareaFocused] = useState(isEditor);
     const [titlePlaceholder, setTitlePlaceholder] = useState("Take a note...");
+    const [noteColor, setNoteColor] = useState(noteToEdit?.color || "202124");
 
     function openEditor() {
         setIsTextareaFocused(true);
@@ -41,7 +42,7 @@ const NoteEditor = ({mode, noteToEdit, closeModalNoteEditor, modalRef}) => {
         closeEditor();
         if (title == "" && content == "") return;
         if (isCreator || noteToEdit == "new") {
-            createNote(title, content);
+            createNote(title, content, noteColor);
         } else if (isEditor) {
             editNote(title, content, noteToEdit.id);
         }
@@ -90,6 +91,7 @@ const NoteEditor = ({mode, noteToEdit, closeModalNoteEditor, modalRef}) => {
             className={`${classes.noteEditor} ${isTextareaFocused ? classes.open : ""} ${classes[mode]}`}
             onSubmit={e => e.preventDefault()}
             onClick={e => e.stopPropagation()}
+            style={{background: "#"+noteColor}}
 
             {...(isEditor && {
                 initial: {scale: 0.3},

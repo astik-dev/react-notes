@@ -28,10 +28,9 @@ const NoteList = ({searchedNotes}) => {
                         {searchedNotes.map(note => 
                             <NoteItem
                                 key={note.id}
-                                title={note.title}
-                                content={note.content}
                                 openNoteEditor={() => navigate(`/note/${note.id}`)}
                                 deleteNote={() => deleteNote(note.id)}
+                                {...{note}}
                             />
                         )}
                     </Masonry>
