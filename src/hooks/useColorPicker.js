@@ -37,8 +37,10 @@ export const useColorPicker = ({changeNoteColor}) => {
                 }
             }
             document.addEventListener("click", handleClickOutside);
+            window.addEventListener('resize', closeColorPicker);
             return () => {
                 document.removeEventListener('click', handleClickOutside);
+                window.removeEventListener('resize', closeColorPicker);
             }
         }
     }, [isColorPickerOpen]);
