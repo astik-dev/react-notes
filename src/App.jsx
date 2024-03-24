@@ -5,21 +5,12 @@ import { MobileContext } from "./contexts/MobileContext";
 import { NotesContext } from "./contexts/NotesContext";
 import { useNotes } from "./hooks/useNotes";
 import AppRoutes from "./routes/AppRoutes";
-import ColorPicker from "./components/ColorPicker/ColorPicker";
-import { useColorPicker } from "./hooks/useColorPicker";
-import { ColorPickerContext } from "./contexts/ColorPickerContext";
 
 function App() {
 
     const mobileScreenWidth = 575.5;
 
     const [notes, noteMethods] = useNotes();
-    const [
-        isColorPickerOpen,
-        colorPickerSelectedColor,
-        colorPickerRef,
-        colorPickerMethods
-    ] = useColorPicker(noteMethods);
     const [searchQuery, setSearchQuery] = useState("");
     const [isMobile, setIsMobile] = useState(window.innerWidth < mobileScreenWidth);
 
@@ -50,17 +41,9 @@ function App() {
     return (
         <MobileContext.Provider value={isMobile}>
             <NotesContext.Provider value={noteMethods}>
-                <ColorPickerContext.Provider value={colorPickerMethods}>
-                    <AppRoutes />
-                    {isColorPickerOpen &&
-                        <ColorPicker
-                            selectedColor={colorPickerSelectedColor}
-                            ref={colorPickerRef}
-                        />
-                    }
-                    <Header {...{setSearchQuery}} />
-                    <Main {...{searchedNotes}} />
-                </ColorPickerContext.Provider>
+                <AppRoutes />
+                <Header {...{setSearchQuery}} />
+                <Main {...{searchedNotes}} />
             </NotesContext.Provider>
         </MobileContext.Provider>
     )

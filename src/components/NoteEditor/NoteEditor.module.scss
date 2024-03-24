@@ -13,6 +13,8 @@
 
     background: #202124;
 
+    transition: background 0.3s;
+
     @media (min-width: $sm) {
         border: 1px solid #5F6368;
         border-radius: 8px;
@@ -41,10 +43,16 @@
 
     .btns {
         display: flex;
-        justify-content: flex-end;
+        justify-content: space-between;
+        align-items: center;
         gap: 15px;
 
-        padding: 4px 15px;
+        padding: 4px 15px 4px 10px;
+
+        .iconBtns {
+            display: flex;
+            gap: 10px;
+        }
     }
 
 
@@ -112,8 +120,8 @@
 .noteEditor.open.editor {
     
     @media (min-width: $sm) {
-        max-height: 90vh;
-        max-height: 90svh;
+        max-height: 85vh;
+        max-height: 85svh;
     }
 }
 .noteEditor.open {

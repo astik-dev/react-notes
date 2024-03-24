@@ -6,6 +6,12 @@ import { motion } from "framer-motion";
 import { MobileContext } from "../../contexts/MobileContext";
 import { NotesContext } from "../../contexts/NotesContext";
 import BackButton from "../UI/BackButton/BackButton";
+import IconButton from "../UI/IconButton/IconButton";
+import { useColorPicker } from "../../hooks/useColorPicker";
+import { createPortal } from "react-dom";
+import ColorPicker from "../ColorPicker/ColorPicker";
+
+const defaultColor = "202124";
 
 const NoteEditor = ({mode, noteToEdit, closeModalNoteEditor, modalRef}) => {
 
@@ -13,15 +19,23 @@ const NoteEditor = ({mode, noteToEdit, closeModalNoteEditor, modalRef}) => {
     const isCreator = mode === "creator";
 
     const isMobile = useContext(MobileContext);
-    const {createNote, editNote, deleteNote} = useContext(NotesContext);
+    const {createNote, editNote, deleteNote, changeNoteColor} = useContext(NotesContext);
+
+    const [
+        isColorPickerOpen,
+        colorPickerSelectedColor,
+        colorPickerOptions,
+        colorPickerRef,
+        {openColorPicker, selectColor: colorPickerSelectColor},
+    ] = useColorPicker(changeNoteColor);
 
     const formRef = useRef();
     const titleRef = useRef();
     const contentRef = useRef();
+    const noteColorRef = useRef(noteToEdit?.color || defaultColor);
 
     const [isTextareaFocused, setIsTextareaFocused] = useState(isEditor);
     const [titlePlaceholder, setTitlePlaceholder] = useState("Take a note...");
-    const [noteColor, setNoteColor] = useState(noteToEdit?.color || "202124");
 
     function openEditor() {
         setIsTextareaFocused(true);
@@ -35,20 +49,42 @@ const NoteEditor = ({mode, noteToEdit, closeModalNoteEditor, modalRef}) => {
             setTitlePlaceholder("Take a note...");
         }
         if (isEditor) closeModalNoteEditor();
+        colorPickerSelectColor(defaultColor);
     }
 
     function saveNote() {
-        const [title, content] = [titleRef.current.value.trim(), contentRef.current.value.trim()];
+        const title = titleRef.current.value.trim();
+        const content = contentRef.current.value.trim();
+        const color = noteColorRef.current;
+
         closeEditor();
         if (title == "" && content == "") return;
         if (isCreator || noteToEdit == "new") {
-            createNote(title, content, noteColor);
+            createNote(title, content, color);
         } else if (isEditor) {
             editNote(title, content, noteToEdit.id);
         }
     }
 
+    function getColorPickerPosition() {
+        const rect = formRef.current.getBoundingClientRect();
+        const positionY = rect.bottom + (isCreator ? window.scrollY : 0);
+        const positionX = (rect.left + rect.right) / 2 + (isCreator ? window.scrollX : 0);
+        
+        if (isEditor) {
+            const colorPickerHeight = isMobile ? 116 : 48;
+            const maxPositionY = window.innerHeight - colorPickerHeight;
+            return [
+                Math.min(maxPositionY, positionY),
+                isMobile ? 0 : positionX,
+            ];
+        }
+
+        return [positionY, positionX];
+    }
+
     function handleClickOutside(event) {
+        if (colorPickerRef.current && colorPickerRef.current.contains(event.target)) return;
         if (
             (isCreator && formRef.current && !formRef.current.contains(event.target)) ||
             (isEditor && event.target == modalRef.current)
@@ -63,6 +99,18 @@ const NoteEditor = ({mode, noteToEdit, closeModalNoteEditor, modalRef}) => {
         func();
     };
 
+    function handleColorClick() {
+        const noteToChangeColor =
+            noteToEdit == "new" || !noteToEdit
+            ? {id: "new", color: noteColorRef.current}
+            : noteToEdit;
+        openColorPicker(
+            noteToChangeColor,
+            getColorPickerPosition(),
+            {position: isEditor ? "fixed" : "absolute"}
+        )
+    }
+
     useEffect(() => {
         if (isTextareaFocused) {
             if (!isMobile) {
@@ -75,8 +123,12 @@ const NoteEditor = ({mode, noteToEdit, closeModalNoteEditor, modalRef}) => {
                 window.removeEventListener("beforeunload", saveNote);
             };
         }
-        
     }, [isTextareaFocused]);
+
+    useEffect(() => {
+        noteColorRef.current = isEditor && noteToEdit != "new" ? noteToEdit.color : colorPickerSelectedColor;
+        formRef.current.style.background = "#"+noteColorRef.current;
+    }, [colorPickerSelectedColor]);
 
     useEffect(() => {
         if (isEditor && noteToEdit != "new") {
@@ -84,56 +136,73 @@ const NoteEditor = ({mode, noteToEdit, closeModalNoteEditor, modalRef}) => {
             contentRef.current.value = noteToEdit.content;
         }
     }, []);
-    
-    return (
-        <motion.form
-            ref={formRef}
-            className={`${classes.noteEditor} ${isTextareaFocused ? classes.open : ""} ${classes[mode]}`}
-            onSubmit={e => e.preventDefault()}
-            onClick={e => e.stopPropagation()}
-            style={{background: "#"+noteColor}}
 
-            {...(isEditor && {
-                initial: {scale: 0.3},
-                animate: {scale: 1},
-                exit: {scale: 0.3},
-                transition: {duration: 0.4, ease: [0.25, 0.1, 0.25, 1.0]},
-            })}
-        >
-            {isMobile &&
-                <div className={classes.header}>
-                    <BackButton onClick={preventDefaultAndExecute(saveNote)} />
-                </div>
-            }
-            <div
-                className={classes.textareas}
-                {...(isMobile && {onClick: () => contentRef.current.focus()})}
+    return (
+        <>
+            <motion.form
+                ref={formRef}
+                className={`${classes.noteEditor} ${isTextareaFocused ? classes.open : ""} ${classes[mode]}`}
+                onSubmit={e => e.preventDefault()}
+                onClick={e => e.stopPropagation()}
+                style={{background: `#${noteColorRef.current}`}}
+
+                {...(isEditor && {
+                    initial: {scale: 0.3},
+                    animate: {scale: 1},
+                    exit: {scale: 0.3},
+                    transition: {duration: 0.4, ease: [0.25, 0.1, 0.25, 1.0]},
+                })}
             >
-                <TextareaAutosize
-                    ref={titleRef}
-                    className={classes.title}
-                    placeholder={isEditor ? "Title" : titlePlaceholder}
-                    {...(!isTextareaFocused && { onFocus: openEditor })}
-                    {...(isMobile && {onClick: e => e.stopPropagation()})}
-                />
-                <TextareaAutosize
-                    ref={contentRef}
-                    className={classes.content}
-                    placeholder="Take a note..."
-                />
-            </div>
-            <div className={classes.btns}>
-                <Button
-                    style={{fontWeight: 400}}
-                    onClick={preventDefaultAndExecute(() => {deleteNote(noteToEdit?.id);closeEditor()})}
+                {isMobile &&
+                    <div className={classes.header}>
+                        <BackButton onClick={preventDefaultAndExecute(saveNote)} />
+                    </div>
+                }
+                <div
+                    className={classes.textareas}
+                    {...(isMobile && {onClick: () => contentRef.current.focus()})}
                 >
-                    Delete
-                </Button>
-                <Button onClick={preventDefaultAndExecute(saveNote)} >
-                    Close
-                </Button>
-            </div>
-        </motion.form>
+                    <TextareaAutosize
+                        ref={titleRef}
+                        className={classes.title}
+                        placeholder={isEditor ? "Title" : titlePlaceholder}
+                        {...(!isTextareaFocused && { onFocus: openEditor })}
+                        {...(isMobile && {onClick: e => e.stopPropagation()})}
+                    />
+                    <TextareaAutosize
+                        ref={contentRef}
+                        className={classes.content}
+                        placeholder="Take a note..."
+                    />
+                </div>
+                <div className={classes.btns}>
+                    <div className={classes.iconBtns}>
+                        <IconButton
+                            icon="delete"
+                            onClick={preventDefaultAndExecute(() => {deleteNote(noteToEdit?.id);closeEditor()})}
+                        />
+                        <IconButton
+                            icon="color"
+                            onClick={preventDefaultAndExecute(handleColorClick)}
+                        />
+                    </div>
+                    {!isMobile && 
+                        <Button onClick={preventDefaultAndExecute(saveNote)} >
+                            Close
+                        </Button>
+                    }
+                </div>
+            </motion.form>
+            {isColorPickerOpen && createPortal(
+                <ColorPicker
+                    selectColor={colorPickerSelectColor}
+                    selectedColor={colorPickerSelectedColor}
+                    options={colorPickerOptions}
+                    ref={colorPickerRef}
+                />,
+                document.body
+            )}
+        </>
     )
 };
 

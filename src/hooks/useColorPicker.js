@@ -1,17 +1,20 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 const defaultColor = "202124";
+const defaultOptions = {position: "absolute", rows: "2"};
 
-export const useColorPicker = ({changeNoteColor}) => {
+export const useColorPicker = (changeNoteColor) => {
 
     const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
     const [selectedColor, setSelectedColor] = useState(defaultColor);
     const [noteToChangeColor, setNoteToChangeColor] = useState();
     const [colorPickerPosition, setColorPickerPosition] = useState([0, 0]);
+    const [colorPickerOptions, setColorPickerOptions] = useState(defaultOptions);
 
     const colorPickerRef = useRef();
 
-    const openColorPicker = useCallback((note, newPosition) => {
+    const openColorPicker = useCallback((note, newPosition, options) => {
+        setColorPickerOptions(options ?? defaultOptions);
         setIsColorPickerOpen(true);
         setNoteToChangeColor(note);
         setSelectedColor(note.color);
@@ -20,12 +23,15 @@ export const useColorPicker = ({changeNoteColor}) => {
 
     const selectColor = useCallback((newColor) => {
         setSelectedColor(newColor);
-        const {id} = noteToChangeColor;
-        changeNoteColor(id, newColor);
+        if (noteToChangeColor && noteToChangeColor.id != "new") {
+            const {id} = noteToChangeColor;
+            changeNoteColor(id, newColor);
+        }
     }, [noteToChangeColor]);
 
     const closeColorPicker = useCallback(() => {
         setIsColorPickerOpen(false);
+        setNoteToChangeColor(null);
     }, []); 
 
     useEffect(() => {
@@ -36,7 +42,7 @@ export const useColorPicker = ({changeNoteColor}) => {
                     document.removeEventListener('click', handleClickOutside);
                 }
             }
-            document.addEventListener("click", handleClickOutside);
+            document.addEventListener("click", handleClickOutside, {capture: true});
             window.addEventListener('resize', closeColorPicker);
             return () => {
                 document.removeEventListener('click', handleClickOutside);
@@ -56,6 +62,7 @@ export const useColorPicker = ({changeNoteColor}) => {
     return [
         isColorPickerOpen,
         selectedColor,
+        colorPickerOptions,
         colorPickerRef,
         {openColorPicker, closeColorPicker, selectColor},
     ];

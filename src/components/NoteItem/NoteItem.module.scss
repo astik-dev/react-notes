@@ -61,24 +61,6 @@
 
         visibility: hidden;
         opacity: 0;
-
-        button {
-            width: 32px;
-            height: 32px;
-
-            background: transparent;
-            border-radius: 50%;
-
-            @media (hover: hover) {
-                &:hover {
-                    background: rgba(154,160,166,0.157);
-                }
-            }
-
-            img {
-                object-fit: contain;
-            }
-        }
     }
 
 

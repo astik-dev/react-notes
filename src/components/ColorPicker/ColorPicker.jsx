@@ -1,7 +1,6 @@
 import { useContext, forwardRef } from "react";
 import classes from "./ColorPicker.module.scss";
 import { MobileContext } from "../../contexts/MobileContext";
-import { ColorPickerContext } from "../../contexts/ColorPickerContext";
 
 const colors = [
     "202124", "77172e", "692b17", "7c4a03",
@@ -9,15 +8,26 @@ const colors = [
     "472e5b", "6c394f", "4b443a", "232427",
 ]
 
-const ColorPicker = forwardRef(({selectedColor}, ref) => {
+const ColorPicker = forwardRef(({options, selectColor, selectedColor}, ref) => {
 
     const isMobile = useContext(MobileContext);
-    const {selectColor} = useContext(ColorPickerContext);
 
     return (
-        <div className={classes.сolorPicker} ref={ref}>
+        <div
+            className={classes.сolorPicker}
+            ref={ref}
+            style={{
+                position: options.position,
+                background: `#${isMobile ? selectedColor : colors[0]}`,
+            }}
+        >
             {isMobile && <p>Color</p>}
-            <div className={classes.colors}>
+            <div
+                className={`
+                    ${classes.colors} 
+                    ${options?.rows == 2 ? classes["two-rows"] : ""}
+                `}
+            >
                 {colors.map(color => 
                     <button
                         key={color}
