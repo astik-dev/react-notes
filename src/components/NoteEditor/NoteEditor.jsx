@@ -93,6 +93,14 @@ const NoteEditor = ({mode, noteToEdit, closeModalNoteEditor, modalRef}) => {
             document.removeEventListener('click', handleClickOutside);
         }
     }
+    
+    function handleEscKey(event) {
+        if (event.key == "Escape") {
+            titleRef.current.blur();
+            saveNote();
+            document.removeEventListener("keydown", handleEscKey);
+        }
+    }
 
     const preventDefaultAndExecute = (func) => (event) => {
         event.preventDefault();
@@ -116,10 +124,14 @@ const NoteEditor = ({mode, noteToEdit, closeModalNoteEditor, modalRef}) => {
             if (!isMobile) {
                 contentRef.current.focus();
                 document.addEventListener("click", handleClickOutside);
+                document.addEventListener("keydown", handleEscKey);
             }
             window.addEventListener("beforeunload", saveNote);
             return () => {
-                if (!isMobile) document.removeEventListener('click', handleClickOutside);
+                if (!isMobile) {
+                    document.removeEventListener('click', handleClickOutside);
+                    document.removeEventListener("keydown", handleEscKey);
+                }
                 window.removeEventListener("beforeunload", saveNote);
             };
         }
