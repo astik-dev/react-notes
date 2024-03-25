@@ -102,6 +102,11 @@ const NoteEditor = ({mode, noteToEdit, closeModalNoteEditor, modalRef}) => {
         }
     }
 
+    function handlePopstate() {
+        saveNote();
+        window.removeEventListener("popstate", handlePopstate);
+    }
+
     const preventDefaultAndExecute = (func) => (event) => {
         event.preventDefault();
         func();
@@ -126,12 +131,14 @@ const NoteEditor = ({mode, noteToEdit, closeModalNoteEditor, modalRef}) => {
                 document.addEventListener("click", handleClickOutside);
                 document.addEventListener("keydown", handleEscKey);
             }
+            if (isEditor) window.addEventListener("popstate", handlePopstate);
             window.addEventListener("beforeunload", saveNote);
             return () => {
                 if (!isMobile) {
                     document.removeEventListener('click', handleClickOutside);
                     document.removeEventListener("keydown", handleEscKey);
                 }
+                if (isEditor) window.removeEventListener("popstate", handlePopstate);
                 window.removeEventListener("beforeunload", saveNote);
             };
         }
