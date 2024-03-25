@@ -30,6 +30,7 @@ export const useNoteEditor = (props, colorPicker, refs, noteColorRef) => {
             setTitlePlaceholder("Take a note...");
         }
         if (isEditor) closeModalNoteEditor();
+        colorPicker.close();
         colorPicker.selectColor(defaultColor);
     }, [isCreator, isEditor]);
 

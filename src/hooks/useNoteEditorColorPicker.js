@@ -20,7 +20,7 @@ export const useNoteEditorColorPicker = ({mode, noteToEdit}, formRef) => {
         colorPickerSelectedColor,
         colorPickerOptions,
         colorPickerRef,
-        {openColorPicker, selectColor: colorPickerSelectColor},
+        {openColorPicker, closeColorPicker, selectColor: colorPickerSelectColor},
     ] = useColorPicker(changeNoteColor);
 
     function getColorPickerPosition() {
@@ -67,6 +67,7 @@ export const useNoteEditorColorPicker = ({mode, noteToEdit}, formRef) => {
         options: colorPickerOptions,
         selectColor: colorPickerSelectColor,
         ref: colorPickerRef,
+        close: closeColorPicker,
     }
 
     return [
