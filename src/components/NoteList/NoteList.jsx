@@ -25,7 +25,7 @@ const NoteList = ({searchedNotes}) => {
         colorPickerRef,
         {openColorPicker, closeColorPicker, selectColor: colorPickerSelectColor},
     ] = useColorPicker(changeNoteColor);
-    
+
     const [activeNoteId, setActiveNoteId] = useState();
 
     const masonryColumnsBreakPoints = useMemo(() => {
@@ -49,6 +49,10 @@ const NoteList = ({searchedNotes}) => {
         }
     }, [isMobile]);
 
+    useEffect(() => {
+        if (!isColorPickerOpen) setActiveNoteId(null);
+    }, [isColorPickerOpen]);
+
     return (
         <>
             <div className={classes.noteList} ref={noteListRef}>
@@ -61,7 +65,7 @@ const NoteList = ({searchedNotes}) => {
                                     key={note.id}
                                     openNoteEditor={() => navigate(`/note/${note.id}`)}
                                     deleteNote={() => deleteNote(note.id)}
-                                    isActive={isColorPickerOpen && activeNoteId == note.id}
+                                    isActive={activeNoteId == note.id}
                                     {...{note, openColorPicker, setActiveNoteId}}
                                 />
                             )}

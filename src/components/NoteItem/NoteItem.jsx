@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import classes from "./NoteItem.module.scss";
 import IconButton from "../UI/IconButton/IconButton";
 
@@ -7,6 +7,8 @@ const NoteItem = ({openNoteEditor, deleteNote, isActive, note, openColorPicker, 
     const noteRef = useRef();
     const deleteBtnRef = useRef();
     const colorBtnRef = useRef();
+
+    const [isDeleting, setIsDeleting] = useState(false);
 
     function getColorPickerPosition() {
         const colorPickerHeight = 84;
@@ -20,13 +22,14 @@ const NoteItem = ({openNoteEditor, deleteNote, isActive, note, openColorPicker, 
     }
 
     function handleColorClick() {
+        if (isActive) return;
         const newColorPickerPosition = getColorPickerPosition();
         openColorPicker(note, newColorPickerPosition);
         setActiveNoteId(note.id);
     }
 
     function handleDeleteClick() {
-        noteRef.current.classList.add(classes.deleteAnimation);
+        setIsDeleting(true);
         setTimeout(deleteNote, 150);
     }
 
@@ -40,7 +43,11 @@ const NoteItem = ({openNoteEditor, deleteNote, isActive, note, openColorPicker, 
 
     return (
         <div
-            className={`${classes.noteItem} ${isActive ? classes.active : ""}`}
+            className={`
+                ${classes.noteItem}
+                ${isActive ? classes.active : ""}
+                ${isDeleting ? classes.deleteAnimation : ""}
+            `}
             onClick={handleNoteClick}
             ref={noteRef}
             style={{background: "#"+note.color}}
