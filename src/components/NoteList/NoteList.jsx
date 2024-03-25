@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useRef } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import NoteItem from "../NoteItem/NoteItem";
 import classes from "./NoteList.module.scss";
 import Masonry, {ResponsiveMasonry} from "react-responsive-masonry";
@@ -25,6 +25,8 @@ const NoteList = ({searchedNotes}) => {
         colorPickerRef,
         {openColorPicker, closeColorPicker, selectColor: colorPickerSelectColor},
     ] = useColorPicker(changeNoteColor);
+    
+    const [activeNoteId, setActiveNoteId] = useState();
 
     const masonryColumnsBreakPoints = useMemo(() => {
         const result = {0: 2};
@@ -59,7 +61,8 @@ const NoteList = ({searchedNotes}) => {
                                     key={note.id}
                                     openNoteEditor={() => navigate(`/note/${note.id}`)}
                                     deleteNote={() => deleteNote(note.id)}
-                                    {...{note, openColorPicker}}
+                                    isActive={isColorPickerOpen && activeNoteId == note.id}
+                                    {...{note, openColorPicker, setActiveNoteId}}
                                 />
                             )}
                         </Masonry>

@@ -2,7 +2,7 @@ import { useRef } from "react";
 import classes from "./NoteItem.module.scss";
 import IconButton from "../UI/IconButton/IconButton";
 
-const NoteItem = ({openNoteEditor, deleteNote, note, openColorPicker}) => {
+const NoteItem = ({openNoteEditor, deleteNote, isActive, note, openColorPicker, setActiveNoteId}) => {
 
     const noteRef = useRef();
     const deleteBtnRef = useRef();
@@ -22,6 +22,7 @@ const NoteItem = ({openNoteEditor, deleteNote, note, openColorPicker}) => {
     function handleColorClick() {
         const newColorPickerPosition = getColorPickerPosition();
         openColorPicker(note, newColorPickerPosition);
+        setActiveNoteId(note.id);
     }
 
     function handleDeleteClick() {
@@ -39,7 +40,7 @@ const NoteItem = ({openNoteEditor, deleteNote, note, openColorPicker}) => {
 
     return (
         <div
-            className={classes.noteItem}
+            className={`${classes.noteItem} ${isActive ? classes.active : ""}`}
             onClick={handleNoteClick}
             ref={noteRef}
             style={{background: "#"+note.color}}
