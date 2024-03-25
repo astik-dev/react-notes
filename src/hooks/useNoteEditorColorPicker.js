@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useRef } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { NotesContext } from "../contexts/NotesContext";
 import { useColorPicker } from "./useColorPicker";
 import { MobileContext } from "../contexts/MobileContext";
@@ -23,6 +23,8 @@ export const useNoteEditorColorPicker = ({mode, noteToEdit}, formRef) => {
         {openColorPicker, closeColorPicker, selectColor: colorPickerSelectColor},
     ] = useColorPicker(changeNoteColor);
 
+    const [shouldCloseColorPicker, setShouldCloseColorPicker] = useState(false);
+
     function getColorPickerPosition() {
         const rect = formRef.current.getBoundingClientRect();
         const positionY = rect.bottom + (isCreator ? window.scrollY : 0);
@@ -41,6 +43,7 @@ export const useNoteEditorColorPicker = ({mode, noteToEdit}, formRef) => {
     }
 
     const handleColorClick = useCallback(() => {
+        if (shouldCloseColorPicker) return;
         const noteToChangeColor =
             noteToEdit == "new" || !noteToEdit
             ? {id: "new", color: noteColorRef.current}
@@ -50,7 +53,7 @@ export const useNoteEditorColorPicker = ({mode, noteToEdit}, formRef) => {
             getColorPickerPosition(),
             {position: isEditor ? "fixed" : "absolute"}
         )
-    }, [noteToEdit]);
+    }, [noteToEdit, isEditor, shouldCloseColorPicker]);
 
     useEffect(() => {
         noteColorRef.current =
@@ -59,6 +62,10 @@ export const useNoteEditorColorPicker = ({mode, noteToEdit}, formRef) => {
             : colorPickerSelectedColor;
         formRef.current.style.background = "#"+noteColorRef.current;
     }, [colorPickerSelectedColor]);
+
+    useEffect(() => {
+        setShouldCloseColorPicker(isColorPickerOpen ? true : false);
+    }, [isColorPickerOpen])
 
 
     const colorPicker = {
