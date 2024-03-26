@@ -5,6 +5,7 @@ const notesFromLocalStorage = JSON.parse(localStorage.getItem("notes")) || [];
 export const useNotes = () => {
     
     const [notes, setNotes] = useState(notesFromLocalStorage);
+    const [searchQuery, setSearchQuery] = useState("");
 
 
     const createNote = useCallback((title, content, color) => {
@@ -36,9 +37,21 @@ export const useNotes = () => {
 
     const findNoteById = useCallback((id) => {
         return notes.find(note => note.id == id);
-    }, [notes])
+    }, [notes]);
 
+    
     const notesLength = useMemo(() => notes.length, [notes]);
+
+    const searchedNotes = useMemo(() => {
+        if (!searchQuery) return notes;
+        const lowerSearchQuery = searchQuery.toLowerCase();
+        return notes.filter(({title, content}) => {
+            return (
+                title.toLowerCase().includes(lowerSearchQuery) ||
+                content.toLowerCase().includes(lowerSearchQuery)
+            );
+        });
+    }, [notes, searchQuery]);
 
 
     useEffect(() => {
@@ -47,7 +60,8 @@ export const useNotes = () => {
 
 
     return [
-        notes,
+        searchedNotes,
+        setSearchQuery,
         {
             createNote,
             editNote,
