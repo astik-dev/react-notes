@@ -59,16 +59,14 @@ export const useNotes = () => {
     }, [notes]);
 
 
-    return [
+    return {
         searchedNotes,
         setSearchQuery,
-        {
-            createNote,
-            editNote,
-            deleteNote,
-            findNoteById,
-            notesLength,
-            changeNoteColor
-        }
-    ];
+        createNote,
+        editNote,
+        deleteNote,
+        findNoteById,
+        notesLength,
+        changeNoteColor
+    }
 }

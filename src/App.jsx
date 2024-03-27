@@ -10,7 +10,7 @@ function App() {
 
     const mobileScreenWidth = 575.5;
 
-    const [searchedNotes, setSearchQuery, noteMethods] = useNotes();
+    const noteMethods = useNotes();
     const [isMobile, setIsMobile] = useState(window.innerWidth < mobileScreenWidth);
 
     useEffect(() => {
@@ -27,8 +27,8 @@ function App() {
         <MobileContext.Provider value={isMobile}>
             <NotesContext.Provider value={noteMethods}>
                 <AppRoutes />
-                <Header {...{setSearchQuery}} />
-                <Main {...{searchedNotes}} />
+                <Header />
+                <Main />
             </NotesContext.Provider>
         </MobileContext.Provider>
     )

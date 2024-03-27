@@ -9,9 +9,9 @@ import { createPortal } from "react-dom";
 import ColorPicker from "../ColorPicker/ColorPicker";
 import { MobileContext } from "../../contexts/MobileContext";
 
-const NoteList = ({searchedNotes}) => {
+const NoteList = () => {
 
-    const {notesLength, deleteNote, changeNoteColor} = useContext(NotesContext);
+    const {searchedNotes, notesLength, deleteNote, changeNoteColor} = useContext(NotesContext);
     const isMobile = useContext(MobileContext);
 
     const navigate = useNavigate();

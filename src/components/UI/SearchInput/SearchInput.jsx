@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import classes from "./SearchInput.module.scss";
+import { NotesContext } from "../../../contexts/NotesContext";
 
-const SearchInput = ({placeholder, setSearchQuery}) => {
+const SearchInput = ({placeholder}) => {
+
+    const {setSearchQuery} = useContext(NotesContext); 
 
     const [inputValue, setInputValue] = useState("");
 

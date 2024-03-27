@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { MobileContext } from "../../contexts/MobileContext";
 
-const Main = ({searchedNotes}) => {
+const Main = () => {
 
     const isMobile = useContext(MobileContext);
     const navigate = useNavigate();
@@ -17,7 +17,7 @@ const Main = ({searchedNotes}) => {
                 ? <AddNoteButton onClick={() => navigate(`/note/new`)} />
                 : <NoteEditor mode="creator" />
             }
-            <NoteList {...{searchedNotes}} />
+            <NoteList />
         </main>
     )
 };
