@@ -1,6 +1,11 @@
+@use "../../../styles/abstracts/breakpoints" as *;
+
 .iconButton {
-    width: 32px;
-    height: 32px;
+    $btn-size: 32px;
+    $btn-size-sm: 38px;
+
+    width: $btn-size;
+    height: $btn-size;
 
     background: transparent;
     border-radius: 50%;
@@ -11,7 +16,38 @@
         }
     }
 
+    @media (max-width: $sm) {
+        width: $btn-size-sm;
+        height: $btn-size-sm;
+    }
+
     img {
         object-fit: contain;
+
+        &.trash {
+            $size: 17px;
+            $size-sm: 21px;
+
+            width: $size;
+            height: $size;
+
+            @media (max-width: $sm) {
+                width: $size-sm;
+                height: $size-sm;
+            }
+        }
+
+        &.color {
+            $size: 19px;
+            $size-sm: 23px;
+
+            width: $size;
+            height: $size;
+
+            @media (max-width: $sm) {
+                width: $size-sm;
+                height: $size-sm;
+            }
+        }
     }
 }
